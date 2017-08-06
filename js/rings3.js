@@ -199,8 +199,10 @@ function mouseDownListener(evt) {
 		if (dragging) {
 			window.addEventListener("mousemove", mouseMoveListener, false);
 			window.addEventListener("touchmove", touchMoveListener, false);
-			evt.preventDefault();
 		}
+		
+		evt.preventDefault();
+		
 		canvas.removeEventListener("mousedown", mouseDownListener, false);
 		canvas.removeEventListener("touchstart", touchStartListener, false);
 		window.addEventListener("mouseup", mouseUpListener, false);
