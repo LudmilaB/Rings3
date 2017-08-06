@@ -322,8 +322,8 @@ function mouseDownListener(evt) {
 	}
 	function mouseMoveListener(evt) {
 	//	document.getElementById('score-container').innerHTML=evt.changedTouches[0].clientX;
-	//	if(evt.type!="mousemove")
-	//		evt.preventDefault();
+		if(evt.type!="mousemove")
+			evt.preventDefault();
 
 		var rng=redragging==false?Ring:Ring1;
 		var posX;
