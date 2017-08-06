@@ -200,8 +200,8 @@ function mouseDownListener(evt) {
 			window.addEventListener("mousemove", mouseMoveListener, false);
 			window.addEventListener("touchmove", touchMoveListener, false);
 		}
-		
-		evt.preventDefault();
+		if(quadr!=null ||dragging)
+		   evt.preventDefault();
 		
 		canvas.removeEventListener("mousedown", mouseDownListener, false);
 		canvas.removeEventListener("touchstart", touchStartListener, false);
