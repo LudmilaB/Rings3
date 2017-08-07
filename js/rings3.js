@@ -360,7 +360,7 @@ function mouseDownListener(evt) {
 		var dy;
 		dx = mx - shape.ct_x;
 		dy = my - shape.ct_y;
-		var rad= shape.r<45?45:shape.r+5;
+		var rad= shape.r<45?45:shape.r+7;
 		
 		//a "hit" will be registered if the distance away from the center is less than the radius of the circular object		
 		return (dx*dx + dy*dy < rad*rad);
