@@ -35,6 +35,14 @@
 	  var Ring;     //ring outsise
 	  var Ring1;     //ring dragged
 	  var Returni, Returnj, Returnk;
+	  
+      var RingInCell = new sound("sounds/menu-button-click-switch-01.mp3");
+	  var MistakeSound = new sound("sounds/notification-alert-95.mp3");
+	  var RingsDissapear = new sound("sounds/correct-answer-bell-gliss-04.mp3");
+	  var EndOfGameSound = new sound("sounds/correct-answer-bell-gliss-01.mp3");
+	  
+	  var PlaySounds=false;
+	  
 	  StartGame();
 
 function shape(ct_x, ct_y,type)
@@ -262,6 +270,7 @@ function mouseDownListener(evt) {
 					}
 					
 				}
+                                var bFullCell=false;  //cell has max rings
 				Ring1.ct_x=-1000;
 				Ring1.ct_y=-1000;
 				if(rng.ind==RpCell-1) //check for complete cell
@@ -282,8 +291,12 @@ function mouseDownListener(evt) {
 						Rings[quadr[0]][quadr[1]][RpCell]=-1;
 						score+=10;
 						MovingScore('+10', x, y, 0 );
+                                                bFullCell=true;
+						RingsDissapear.play();
 					}
 				}
+                                if(!bFullCell && !redragging)
+					RingInCell.play();
 	            document.getElementById('score-container').innerHTML=score;
 	 
 	            if(score > best)
@@ -296,6 +309,7 @@ function mouseDownListener(evt) {
             //    draw();
 				if(EndOfGame()==true)
 				{
+                                        EndOfGameSound.play();
 					messageContainer = document.querySelector(".game-message");
 					messageContainer.classList.add("game-over");
 					messageContainer.getElementsByTagName("p")[0].textContent ="Out of moves";
@@ -305,6 +319,7 @@ function mouseDownListener(evt) {
 			}
 			else
 			{
+                                MistakeSound.play();
 				if(redragging==false)
 				{
 				  Ring.ct_x=StartP.x;
@@ -416,7 +431,6 @@ function mouseDownListener(evt) {
 		 }
 	  }
 
-	  console.log(MaxCounts);
 	  var allcells=cells*cells;
 //	  if(MaxCounts[RpCell-1]==allcells)  //all cells have largest circles
 //		  return true;
@@ -424,10 +438,7 @@ function mouseDownListener(evt) {
 	  for (var i=MaxRingsInOneCell; i< RpCell; i++) 
 			if(MaxCounts[i]>0)
 				AddRings++;
-	  console.log("MaxRingsInOneCell");
-	  console.log(MaxRingsInOneCell);
-	  console.log("AddRings");
-	  console.log(AddRings);
+
       if(AddRings==RpCell)	 //you have moves
          return false;
 	 
@@ -454,26 +465,57 @@ function MovingScore(txt, x, y, moves )
    ctx.fillText(txt,x,y-moves*2);
    setTimeout( function(){MovingScore(txt, x, y, moves)}, 20);
 }
-	
-/*function ShareScore()
-   {
-	var tweet = document.getElementById("share-twitter");
-    var text = "https://twitter.com/intent/tweet?text="+"I've scored " + this.score +" of Ringes "+this.cells+"x"+this.cells+". Can you beat me? http://shapesmania.com/";
-    tweet.href=text;
-	var facebook = document.getElementById("share-facebook");
-	text="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fshapesmania.com%2F&picture=http%3A%2F%2Fshapesmania.com%2Fstatic%2Frings"+this.cells+".png&title=Shapes+Mania&caption=ShapesMania.com&quote=I%27ve+scored+"+this.score+" of Ringes"+this.cells+"x"+this.cells+"%21+Can+you+beat+me%3F&description=puzzle+games";
-	facebook.href=text;
-	var google = document.getElementById("share-google");
-	text="https://plus.google.com/share?url=http://shapesmania.com/share/Rings"+this.cells+"/" +this.score+"/"+this.level;
-	google.href=text;
-   }  */
    
 function RemoveMessage()
 {
 		
 	  messageContainer = document.querySelector(".game-message");
 	  messageContainer.classList.remove("game-over");
-      messageContainer.classList.remove("game-continue");  
-		
+      messageContainer.classList.remove("game-continue");  		
+}
+
+function ActivateSounds()
+{
+      RingInCell.play();
+	  RingInCell.stop();
+	  MistakeSound.play();
+	  MistakeSound.stop();
+	  EndOfGameSound.play();
+	  EndOfGameSound.stop();  
+	  RingsDissapear.play(); 
+	  RingsDissapear.stop(); 
+}
+
+function ToggleSound()
+{
+	PlaySounds=!PlaySounds;
+	if(PlaySounds)
+	{
+		ActivateSounds();
+		document.getElementById("sound-button").src="res/sound_mute.png";
+	}
+	else
+		document.getElementById("sound-button").src="res/sound.png";
+}
+
+function sound(src)
+{
+    this.sound = document.createElement("audio");
+    this.sound.src = src;
+    this.sound.setAttribute("preload", "auto");
+    this.sound.setAttribute("controls", "none");
+    this.sound.style.display = "none";
+    document.body.appendChild(this.sound);
+    this.play = function(){
+		if(PlaySounds)
+		{
+		  this.sound.pause();
+          this.sound.currentTime = 0;
+          this.sound.play();
+		}
+    }
+    this.stop = function(){
+        this.sound.pause();
+    }
 }
 	
